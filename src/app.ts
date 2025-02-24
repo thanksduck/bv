@@ -11,7 +11,7 @@ app.use(secureHeaders());
 app.use(logger());
 app.use(cors());
 
-app.route("/api/v1", bvRouter);
+app.route("/api", bvRouter);
 app.get("/health", (c) => {
   return c.text("Hey i'm alive");
 });
