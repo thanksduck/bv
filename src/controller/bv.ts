@@ -14,7 +14,7 @@ export default async function bankVerification(c: Context) {
         500,
       );
     }
-
+    const url = `${process.env.CASHFREE_HOST_TEST}/verification/bank-account/async`;
     // Get request body from client with proper error handling
     let body;
     try {
@@ -61,10 +61,7 @@ export default async function bankVerification(c: Context) {
 
     console.log("Sending request to Cashfree API");
 
-    const response = await fetch(
-      "https://sandbox.cashfree.com/verification/bank-account/async",
-      options,
-    );
+    const response = await fetch(url, options);
 
     if (!response.ok) {
       console.error(
