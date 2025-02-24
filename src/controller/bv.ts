@@ -1,4 +1,5 @@
 import { Context } from "hono";
+import { ContentfulStatusCode } from "hono/utils/http-status";
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -14,8 +15,24 @@ export default async function bankVerification(c: Context) {
       );
     }
 
-    // Get request body from client
-    const body = await c.req.json();
+    // Get request body from client with proper error handling
+    let body;
+    try {
+      body = await c.req.json();
+    } catch (parseError) {
+      console.error("JSON parsing error:", parseError);
+      return c.json(
+        { success: false, error: "Invalid JSON in request body" },
+        400,
+      );
+    }
+
+    // Check if body exists
+    if (!body || Object.keys(body).length === 0) {
+      return c.json({ success: false, error: "Empty request body" }, 400);
+    }
+
+    console.log("Received body:", body);
 
     // Validate required fields
     const requiredFields = ["bank_account", "ifsc", "name", "user_id", "phone"];
@@ -42,11 +59,31 @@ export default async function bankVerification(c: Context) {
       body: JSON.stringify(body),
     };
 
+    console.log("Sending request to Cashfree API");
+
     const response = await fetch(
       "https://sandbox.cashfree.com/verification/bank-account/async",
       options,
     );
+
+    if (!response.ok) {
+      console.error(
+        "Cashfree API error:",
+        response.status,
+        response.statusText,
+      );
+      return c.json(
+        {
+          success: false,
+          error: `Cashfree API error: ${response.status}`,
+          details: await response.text(),
+        },
+        (response.status as ContentfulStatusCode) || 500,
+      );
+    }
+
     const data = await response.json();
+    console.log("Cashfree API response:", data);
 
     // Return the response data
     return c.json({
@@ -59,6 +96,7 @@ export default async function bankVerification(c: Context) {
       {
         success: false,
         error: "Failed to process bank verification request",
+        details: error instanceof Error ? error.message : String(error),
       },
       500,
     );

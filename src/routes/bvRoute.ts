@@ -7,6 +7,6 @@ const token = process.env.TOKEN || "easy-password";
 
 bvRouter.use("*", bearerAuth({ token }));
 
-bvRouter.get("/bank-verification", bankVerification);
+bvRouter.post("/bank-verification", bankVerification);
 
 export default bvRouter;
