@@ -1,6 +1,8 @@
 {
   "name": "bv-api",
   "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "start": "bun run ./dist/index.js",
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {

@@ -7,7 +7,7 @@ This API provides a secure way to verify bank accounts using the Cashfree API wi
 1. Clone the repository
 2. Install dependencies:
    ```
-   npm install
+   bun install
    ```
 3. Set up environment variables in a `.env` file:
    ```
