@@ -4,16 +4,16 @@ import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
 import { cors } from "hono/cors";
 import bvRouter from "./routes/bvRoute";
-const app = new Hono();
+import notifyRouter from "./routes/notifyRoute";
 
-app.use(poweredBy());
-app.use(secureHeaders());
-app.use(logger());
-app.use(cors());
-
-app.route("/api", bvRouter);
-app.get("/health", (c) => {
-  return c.text("Hey i'm alive");
-});
-
+const app = new Hono()
+  .use(poweredBy())
+  .use(secureHeaders())
+  .use(logger())
+  .use(cors())
+  .route("/api", bvRouter)
+  .get("/health", (c) => {
+    return c.text("Hey i'm alive");
+  })
+  .route("/notify", notifyRouter);
 export default app;
