@@ -1,7 +1,7 @@
 services:
   rule-api:
     build: .
-    container_name: bv-api
+    container_name: bun-bv-api
     env_file: .env
     networks:
       - npm-network
